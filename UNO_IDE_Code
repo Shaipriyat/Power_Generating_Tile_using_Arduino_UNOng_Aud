@@ -1,0 +1,58 @@
+#include <LiquidCrystal.h>
+const int rs=12,en=11,d4=5,d5=4,d6=3,d7=2; 
+LiquidCrystal lcd(12,11,5,4,3,2);
+#define NUM_SAMPLES 10
+int buttonstate=0;
+int sum = 0;
+unsigned char sample_count = 0; 
+float voltage = 0.00; 
+int led = 13 ;
+int button = 7;
+int count = 0;
+void setup()
+{
+pinMode(led, OUTPUT);
+digitalWrite(led, LOW);
+lcd.begin(16, 2);
+lcd.print("POWER GENERATING");
+lcd.setCursor(0, 1);
+lcd.print("TILE");
+delay(1000);
+delay(1000);
+delay(1000);
+delay(1000);
+//Serial.begin(9600);
+lcd.clear();
+lcd.print("VOLTS: ");
+lcd.setCursor(0, 1);
+lcd.print("STEPS: ");
+}
+void loop()
+{
+  buttonstate=digitalRead(button);
+  if(buttonstate==HIGH)
+  {
+    digitalWrite(led, HIGH);
+    count++;
+  }
+while (sample_count<NUM_SAMPLES)
+{
+sum += analogRead(A0);
+sample_count++;
+delay(10);
+}
+sum = analogRead(A0);
+voltage = ((float)sum * 5.015) / 1024.0;
+Serial.println("voltage");
+Serial.println("count");
+voltage = ((float)voltage * 11.132);
+lcd.setCursor(8,0);
+lcd.print(voltage);
+delay(400);
+lcd.setCursor(8,1);
+lcd.print(count);
+delay(400);
+sample_count = 0;
+sum = 0;
+digitalWrite(led, LOW);
+}
